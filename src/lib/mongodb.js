@@ -8,6 +8,9 @@ let clientPromise;
 if (!global._mongoClientPromise) {
   global._mongoClientPromise = client.connect();
 }
+if (!uri) {
+  throw new Error("Please add your MONGODB_URI to .env.local");
+}
 
 clientPromise = global._mongoClientPromise;
 

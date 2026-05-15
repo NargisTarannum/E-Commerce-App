@@ -1,20 +1,31 @@
-import Navbar from "./components/Navbar";
-import ProductCard from "./components/ProductCard";
-import { products } from "../data/products";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div>
-      <Navbar />
-      <div className="max-w-6xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Products</h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
+      
+      <h1 className="text-5xl font-bold text-blue-600 mb-4">
+        E-Commerce Store
+      </h1>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((item) => (
-            <ProductCard key={item.id} product={item} />
-          ))}
-        </div>
+      <p className="text-gray-600 mb-8">
+        Buy amazing products online
+      </p>
+
+      <div className="flex gap-4">
+        <Link href="/login">
+          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg">
+            Login
+          </button>
+        </Link>
+
+        <Link href="/signup">
+          <button className="bg-green-500 text-white px-6 py-3 rounded-lg">
+            Signup
+          </button>
+        </Link>
       </div>
+
     </div>
   );
 }
