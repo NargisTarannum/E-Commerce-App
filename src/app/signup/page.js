@@ -11,27 +11,28 @@ export default function Signup() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    router.push("/dashboard");
 
-    const res = await fetch("/api/signup", {
-      method: "POST",
-      body: JSON.stringify(form),
-    });
+    // const res = await fetch("/api/signup", {
+    //   method: "POST",
+    //   body: JSON.stringify(form),
+    // });
 
-    const data = await res.json();
-    setLoading(false);
+    // const data = await res.json();
+    // setLoading(false);
 
-    alert(data.message);
+    // alert(data.message);
 
-    if (res.ok) {
-      router.push("/login");
-    }
+    // if (res.ok) {
+    //   router.push("/login");
+    // }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-purple-600 to-indigo-500">
-      
+
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 sm:p-8">
-        
+
         <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800">
           Create Account 🚀
         </h2>
@@ -44,15 +45,27 @@ export default function Signup() {
           <input
             type="email"
             placeholder="Email"
-            className="w-full px-4 py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            value={form.email}
+            className="w-full px-4 py-3 text-sm sm:text-base text-gray-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
+            }
           />
 
           <input
             type="password"
             placeholder="Password"
-            className="w-full px-4 py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            value={form.password}
+            className="w-full px-4 py-3 text-sm sm:text-base text-gray-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                password: e.target.value,
+              }))
+            }
           />
         </div>
 
