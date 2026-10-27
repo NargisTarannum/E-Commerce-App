@@ -68,9 +68,9 @@ export default function Navbar() {
 
       <div className="flex items-center gap-10">
 
-        <a href="#">Products</a>
+        <a href="#" className="text-xl">Products</a>
 
-        <a href="#">Categories</a>
+        <a href="#" className="text-xl">Categories</a>
 
         <User size={28} />
 

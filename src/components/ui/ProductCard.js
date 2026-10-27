@@ -58,7 +58,7 @@ export default function ProductCard({ product }) {
           </span>
         </div>
 
-        <button className="w-12 h-12 rounded bg-pink-500 hover:bg-pink-600 text-white flex items-center justify-center transition">
+        <button className="w-12 h-9 rounded bg-pink-500 hover:bg-pink-600 flex items-center justify-center transition">
           🛒
         </button>
 

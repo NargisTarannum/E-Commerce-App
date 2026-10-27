@@ -1,31 +1,71 @@
-import Link from "next/link";
+import AnnouncementBar from "@/components/layout/AnnouncementBar";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Hero from "@/components/sections/Hero";
+import Categories from "@/components/sections/Categories";
+import ProductGrid from "@/components/sections/ProductGrid";
+import PromoBanner from "@/components/sections/PromoBanner";
+import Testimonials from "@/components/sections/Testimonials";
+import Newsletter from "@/components/sections/Newsletter";
+import { getCategories, getHomeProducts, getTestimonials } from "@/lib/api";
 
-export default function Home() {
+async function safe(promise, label) {
+  try {
+    return await promise;
+  } catch (error) {
+    console.error(`[home] ${label} failed:`, error);
+    return null;
+  }
+}
+
+export default async function HomePage() {
+  const [products, categories, testimonials] = await Promise.all([
+    safe(getHomeProducts(), "products"),
+    safe(getCategories(), "categories"),
+    safe(getTestimonials(), "testimonials"),
+  ]);
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
-      
-      <h1 className="text-5xl font-bold text-blue-600 mb-4">
-        E-Commerce Store
-      </h1>
+    <>
+      <AnnouncementBar />
+      <Header />
 
-      <p className="text-gray-600 mb-8">
-        Buy amazing products online
-      </p>
+      <main id="main">
+        <Hero />
+        <Categories categories={categories} />
 
-      <div className="flex gap-4">
-        <Link href="/login">
-          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg">
-            Login
-          </button>
-        </Link>
+        {products ? (
+          <>
+            <ProductGrid
+              id="featured"
+              eyebrow="Top rated"
+              title="Featured pieces"
+              description="The styles our customers rate highest."
+              items={products.featured}
+            />
+            <PromoBanner />
+            <ProductGrid
+              id="new-arrivals"
+              eyebrow="Just landed"
+              title="New arrivals"
+              description="Fresh additions to the collection."
+              items={products.newArrivals}
+            />
+          </>
+        ) : (
+          <p
+            role="alert"
+            className="mx-auto max-w-7xl px-4 py-24 text-center text-muted sm:px-6 lg:px-8"
+          >
+            We couldn't load products right now. Please try again shortly.
+          </p>
+        )}
 
-        <Link href="/signup">
-          <button className="bg-green-500 text-white px-6 py-3 rounded-lg">
-            Signup
-          </button>
-        </Link>
-      </div>
+        <Testimonials items={testimonials} />
+        <Newsletter />
+      </main>
 
-    </div>
+      <Footer />
+    </>
   );
 }
