@@ -1,5 +1,7 @@
 import { Inter, Fraunces } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
+import { ToastProvider } from "@/components/ui/Toast";
+import { WishlistProvider } from "@/context/WishlistContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,7 +26,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <body className="min-h-screen antialiased">
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          <ToastProvider>
+            <WishlistProvider>{children}</WishlistProvider>
+          </ToastProvider>
+        </CartProvider>
       </body>
     </html>
   );

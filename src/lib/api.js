@@ -50,7 +50,52 @@ export function normalizeProduct(raw) {
     image: raw.thumbnail,
     imageAlt: raw.title,
     createdAt: raw.meta?.createdAt ?? null,
+    // null when the API response didn't include stock (e.g. `select=` queries)
+    stock: Number.isFinite(Number(raw.stock)) ? Number(raw.stock) : null,
   };
+}
+
+// Raw product by id, or null when it doesn't exist (404).
+export async function getProductById(id, { revalidate = 300 } = {}) {
+  const res = await fetch(`${BASE_URL}/products/${id}`, { next: { revalidate } });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API request failed (${res.status}) for /products/${id}`);
+  return res.json();
+}
+
+// Normalized product plus the extra fields the detail page needs.
+export async function getProduct(id) {
+  const raw = await getProductById(id);
+  if (!raw) return null;
+  return {
+    ...normalizeProduct(raw),
+    description: raw.description ?? "",
+    brand: raw.brand ?? "",
+    images: Array.isArray(raw.images) ? raw.images : [],
+  };
+}
+
+// Looks up many products, a few at a time. Each result is
+// { id, product } (found), { id, product: null, missing: true } (404)
+// or { id, product: null, missing: false } (API error, try again later).
+export async function getProductsByIds(ids, { chunk = 10 } = {}) {
+  const results = [];
+  for (let i = 0; i < ids.length; i += chunk) {
+    const batch = await Promise.all(
+      ids.slice(i, i + chunk).map(async (id) => {
+        try {
+          const raw = await getProductById(id);
+          return raw
+            ? { id, product: normalizeProduct(raw), missing: false }
+            : { id, product: null, missing: true };
+        } catch {
+          return { id, product: null, missing: false };
+        }
+      })
+    );
+    results.push(...batch);
+  }
+  return results;
 }
 
 async function getFashionProducts() {

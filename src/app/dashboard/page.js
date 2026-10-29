@@ -1,18 +1,6 @@
-import Navbar from "../components/Navbar";
-import Hero from "../../components/sections/Hero";
-import Features from "../components/Features";
-import TrendingProducts from "../components/TrendingProducts";
-import Banner from "../../components/sections/PromoBanner";
+import { redirect } from "next/navigation";
 
-
-export default function Home() {
-  return (
-    <div>
-      <Navbar />
-       <Hero />
-      <Features />
-      <TrendingProducts />
-      <Banner />
-    </div>
-  );
+// The old dashboard was a copy of the homepage; accounts now live at /account.
+export default function DashboardPage() {
+  redirect("/account");
 }

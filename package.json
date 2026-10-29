@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/postcss": "^4.3.3",
     "bcryptjs": "^3.0.3",
+    "jose": "^6.2.13",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^1.28.0",
     "mongoose": "^9.6.1",

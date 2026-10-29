@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Search, Heart, ShoppingBag, User, Menu, X } from "lucide-react";
 import { navLinks, siteConfig } from "@/lib/data";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
 const QUICK_SEARCHES = ["Dress", "Shirt", "Shoes", "Bag"];
 
@@ -52,6 +53,13 @@ export default function Header() {
     itemCount === 0
       ? "Cart"
       : `Cart, ${itemCount} ${itemCount === 1 ? "item" : "items"}`;
+
+  const { count: wishlistCount } = useWishlist();
+  const wishlistBadge = wishlistCount > 99 ? "99+" : wishlistCount || null;
+  const wishlistLabel =
+    wishlistCount === 0
+      ? "Wishlist"
+      : `Wishlist, ${wishlistCount} ${wishlistCount === 1 ? "item" : "items"}`;
 
   const closeSearch = () => setSearchOpen(false);
 
@@ -143,10 +151,10 @@ export default function Header() {
               <Search size={20} strokeWidth={1.75} />
             )}
           </IconButton>
-          <IconButton label="Account" className="hidden sm:grid">
+          <IconButton href="/account" label="Account" className="hidden sm:grid">
             <User size={20} strokeWidth={1.75} />
           </IconButton>
-          <IconButton label="Wishlist" className="hidden sm:grid">
+          <IconButton href="/wishlist" label={wishlistLabel} badge={wishlistBadge}>
             <Heart size={20} strokeWidth={1.75} />
           </IconButton>
           <IconButton href="/cart" label={cartLabel} badge={cartBadge}>
@@ -253,18 +261,20 @@ export default function Header() {
           </nav>
 
           <div className="flex gap-3 border-t border-line pt-6">
-            <button
-              type="button"
+            <Link
+              href="/account"
+              onClick={() => setMenuOpen(false)}
               className="flex flex-1 items-center justify-center gap-2 rounded-full border border-line py-3 text-sm font-medium transition-colors hover:bg-sand"
             >
               <User size={18} /> Account
-            </button>
-            <button
-              type="button"
+            </Link>
+            <Link
+              href="/wishlist"
+              onClick={() => setMenuOpen(false)}
               className="flex flex-1 items-center justify-center gap-2 rounded-full border border-line py-3 text-sm font-medium transition-colors hover:bg-sand"
             >
-              <Heart size={18} /> Wishlist
-            </button>
+              <Heart size={18} /> Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}
+            </Link>
           </div>
         </div>
       </div>

@@ -3,15 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Check, Star, ImageOff } from "lucide-react";
+import { ShoppingBag, Check, Star, ImageOff } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 import { formatPrice } from "@/lib/format";
 
-export default function ProductCard({
-  product,
-  priority = false,
-  onToggleWishlist,
-}) {
+export default function ProductCard({ product, priority = false }) {
   const {
     name,
     slug,
@@ -25,7 +22,6 @@ export default function ProductCard({
   } = product;
 
   const { addItem } = useCart();
-  const [wishlisted, setWishlisted] = useState(false);
   const [added, setAdded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const timer = useRef(null);
@@ -38,12 +34,6 @@ export default function ProductCard({
       : 0;
   const hasRating = typeof rating === "number" && rating > 0;
   const href = `/products/${slug}`;
-
-  const handleWishlist = () => {
-    const next = !wishlisted;
-    setWishlisted(next);
-    onToggleWishlist?.(product, next);
-  };
 
   const handleAddToCart = () => {
     addItem(product);
@@ -94,25 +84,7 @@ export default function ProductCard({
         </div>
 
         {/* Wishlist */}
-        <button
-          type="button"
-          onClick={handleWishlist}
-          aria-pressed={wishlisted}
-          aria-label={
-            wishlisted
-              ? `Remove ${name} from wishlist`
-              : `Add ${name} to wishlist`
-          }
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-canvas/90 text-ink shadow-sm backdrop-blur transition duration-200 hover:scale-110 hover:bg-canvas active:scale-95"
-        >
-          <Heart
-            size={18}
-            strokeWidth={1.75}
-            className={`transition-colors ${
-              wishlisted ? "fill-clay text-clay" : ""
-            }`}
-          />
-        </button>
+        <WishlistButton product={product} className="absolute right-3 top-3" />
 
         {/* Add to cart: always visible on touch, slides up on hover/focus for mouse users */}
         <div className="absolute inset-x-3 bottom-3 transition duration-300 [@media(hover:hover)]:translate-y-[130%] [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-within:translate-y-0 [@media(hover:hover)]:group-focus-within:opacity-100">
