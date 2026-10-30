@@ -10,7 +10,7 @@ import {
   createToken,
 } from "@/lib/auth";
 import { cleanEmail, isValidEmail } from "@/lib/validation";
-import { clientIp, rateLimit, tooMany } from "@/lib/rateLimit";
+import { clientIp, rateLimit, resetRateLimit, tooMany } from "@/lib/rateLimit";
 
 // Compared against when the email doesn't exist, so timing doesn't reveal it.
 const DUMMY_HASH = bcrypt.hashSync("not-a-real-password", 12);
@@ -46,6 +46,9 @@ export async function POST(req) {
     const hash = user?.passwordHash || user?.password || DUMMY_HASH;
     const ok = await bcrypt.compare(password, hash);
     if (!user || !ok) return Response.json(INVALID, { status: 401 });
+
+    // Only failed attempts should count towards the lockout.
+    resetRateLimit(`login-acct:${email}:${ip}`);
 
     // Migrate legacy accounts that stored the hash in `password`.
     if (!user.passwordHash) {

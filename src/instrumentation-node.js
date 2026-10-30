@@ -1,13 +1,16 @@
 import dns from "node:dns";
 
-// mongodb+srv:// needs DNS SRV lookups. If the machine's resolver refuses them
-// (querySrv ECONNREFUSED), set MONGODB_DNS_SERVERS=8.8.8.8,1.1.1.1 in .env.local.
 const servers = (process.env.MONGODB_DNS_SERVERS || "")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
 
+console.log("[DNS] Instrumentation loaded");
+console.log("[DNS] Configured servers:", servers);
+
 if (servers.length) {
   dns.setServers(servers);
-  dns.promises.setServers(servers); // the MongoDB driver uses the promise-based resolver
+  // The MongoDB driver resolves SRV records through dns.promises, which has its own server list.
+  dns.promises.setServers(servers);
+  console.log("[DNS] Active servers:", dns.getServers(), "| promises:", dns.promises.getServers());
 }

@@ -21,6 +21,11 @@ export function rateLimit(key, { limit, windowMs }) {
   };
 }
 
+// Forget a key's attempts, e.g. after a successful login.
+export function resetRateLimit(key) {
+  buckets.delete(key);
+}
+
 export function clientIp(req) {
   const fwd = req.headers.get("x-forwarded-for");
   return (fwd ? fwd.split(",")[0].trim() : req.headers.get("x-real-ip")) || "unknown";
